@@ -1,0 +1,49 @@
+version: '2'
+services:
+  database:
+    image: mariadb
+    networks:
+      - backend
+    volumes:
+      - "./datadir:/var/lib/mysql"
+      - "./bridgedir:/bridgedir"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: drupal 
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: 123456
+
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - "587:587"
+      - "8025:8025"
+    networks:
+      - backend
+
+  web:
+    image: bluers/docker8-fpm
+    ports:
+      - "8000:80"
+    volumes:
+      - "./web:/var/www/web:rw"
+      - "./bridgedir:/bridgedir"
+      - "files_public:/var/www_files/public:rw"
+      - "files_private:/var/www_files/private:rw"
+      - "ssh:/root/.ssh:rw"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  database:
+    driver: local
+  files_public:
+    driver: local
+  files_private:
+    driver: local
+  ssh:
+    driver: local
