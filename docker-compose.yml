@@ -22,7 +22,7 @@ services:
       - backend
 
   web:
-    image: bluers/docker8-fpm
+    image: bluers/docker-drupal-nginx 
     ports:
       - "8000:80"
     volumes:
@@ -33,6 +33,16 @@ services:
       - "ssh:/root/.ssh:rw"
     networks:
       - backend
+  portainer:
+    image: portainer/portainer
+    command: --no-auth -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - backend
+    
 
 networks:
   backend:
