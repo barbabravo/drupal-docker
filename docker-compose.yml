@@ -2,16 +2,16 @@ version: '2'
 services:
   database:
     image: mariadb
-    networks:
-      - backend
     volumes:
       - "./datadir:/var/lib/mysql"
       - "./bridgedir:/bridgedir"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: drupal 
-      MYSQL_USER: drupal
+      MYSQL_DATABASE: zhiku_db 
+      MYSQL_USER: zhiku
       MYSQL_PASSWORD: 123456
+    networks:
+      - backend
 
   mail:
     image: mailhog/mailhog
@@ -22,7 +22,7 @@ services:
       - backend
 
   web:
-    image: bluers/docker-drupal-nginx 
+    image: bluers/docker-drupal-nginx
     ports:
       - "8000:80"
     volumes:
@@ -33,6 +33,7 @@ services:
       - "ssh:/root/.ssh:rw"
     networks:
       - backend
+
   portainer:
     image: portainer/portainer
     command: --no-auth -H unix:///var/run/docker.sock
@@ -42,7 +43,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
-    
+
+  traefik:
+    image: traefik
+    command: -c /dev/null --web --docker --api --logLevel=INFO
+    ports:
+      - '10080:80' # The HTTP port
+      - '18080:8080' # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  
+    networks:
+      - backend
 
 networks:
   backend:
