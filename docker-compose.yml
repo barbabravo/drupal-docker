@@ -7,8 +7,8 @@ services:
       - "./bridgedir:/bridgedir"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: zhiku_db 
-      MYSQL_USER: zhiku
+      MYSQL_DATABASE: db
+      MYSQL_USER: db_user 
       MYSQL_PASSWORD: 123456
     networks:
       - backend
@@ -38,22 +38,21 @@ services:
     image: portainer/portainer
     command: --no-auth -H unix:///var/run/docker.sock
     ports:
-      - "9000:9000"
+      - "19000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
 
-  traefik:
-    image: traefik
-    command: -c /dev/null --web --docker --api --logLevel=INFO
-    ports:
-      - '10080:80' # The HTTP port
-      - '18080:8080' # Dashboard
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock  
-    networks:
-      - backend
+  # traefik:
+  #   image: traefik
+  #   command: -c /dev/null --web --docker --api --logLevel=INFO
+  #   ports:
+  #     - '18080:8080' # Dashboard
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock  
+  #   networks:
+  #     - backend
 
 networks:
   backend:

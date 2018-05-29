@@ -3,3 +3,6 @@
 datadir
 web
 web/**
+.vscode
+.vscode/**
+drupal-**
