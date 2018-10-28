@@ -1,18 +1,34 @@
 version: '2'
 services:
-  database:
-    image: mariadb
+  web:
+    image: nginx:1.11.1
+    ports:
+      - "10001:80"
+    depends_on:
+      - php
+    volumes_from:
+      - php
     volumes:
-      - "./datadir:/var/lib/mysql"
-      - "./bridgedir:/bridgedir"
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: db
-      MYSQL_USER: db_user 
-      MYSQL_PASSWORD: 123456
-    networks:
-      - backend
+      - ./images/nginx/config:/etc/nginx/conf.d
+      - ./logs/nginx:/var/log/nginx
 
+  php:
+    build:
+      context: ./images/php
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/mnt/app
+
+  db:
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "drupal"
+      MYSQL_USER: "drupal"
+      MYSQL_PASSWORD: "drupal"
+    volumes:
+      - db:/var/lib/mysql
+  
   mail:
     image: mailhog/mailhog
     ports:
@@ -20,20 +36,7 @@ services:
       - "8025:8025"
     networks:
       - backend
-
-  web:
-    image: bluers/docker-drupal-nginx
-    ports:
-      - "8000:80"
-    volumes:
-      - "./web:/var/www/web:rw"
-      - "./bridgedir:/bridgedir"
-      - "files_public:/var/www_files/public:rw"
-      - "files_private:/var/www_files/private:rw"
-      - "ssh:/root/.ssh:rw"
-    networks:
-      - backend
-
+  
   portainer:
     image: portainer/portainer
     command: --no-auth -H unix:///var/run/docker.sock
@@ -44,26 +47,11 @@ services:
     networks:
       - backend
 
-  # traefik:
-  #   image: traefik
-  #   command: -c /dev/null --web --docker --api --logLevel=INFO
-  #   ports:
-  #     - '18080:8080' # Dashboard
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock  
-  #   networks:
-  #     - backend
+volumes:
+  db:
+    driver: local
+
 
 networks:
   backend:
     driver: bridge
-
-volumes:
-  database:
-    driver: local
-  files_public:
-    driver: local
-  files_private:
-    driver: local
-  ssh:
-    driver: local

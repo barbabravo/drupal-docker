@@ -1,35 +1,27 @@
 #!/bin/sh
 echo 'Starting ...\n'
-version='8.5.3'
 
 pwd=`pwd`
 
-if [ ! -f "$pwd/drupal-$version.tar.gz" ];then
+if [ ! -f "$pwd/drupal.tar.gz" ];then
 	echo 'Downloading drupal ...\n'
-	wget https://ftp.drupal.org/files/projects/drupal-$version.tar.gz 
+	curl -L https://www.drupal.org/download-latest/tar.gz  > drupal.tar.gz
 	echo 'Downloading drupal successfully\n'
 fi
 
-if [ ! -d "$pwd/web" ];then
+if [ ! -d "$pwd/app" ];then
 	echo "Building your first drupal project...\n"
-	if [ ! -f "$pwd/drupal-$version.tar.gz" ];then
+	if [ ! -f "$pwd/drupal.tar.gz" ];then
 		echo 'Downloading drupal ...\n'
-		wget https://ftp.drupal.org/files/projects/drupal-$version.tar.gz
+		curl -L https://www.drupal.org/download-latest/tar.gz  > drupal.tar.gz
 		echo 'Downloading drupal successfully\n'
 	fi
-	tar -zxvf drupal-$version.tar.gz
-	mv drupal-$version/ web 
-fi
-if [ ! -d "$pwd/bridgedir" ];then
-        echo 'Building bridge directory ...\n'
-        mkdir bridgedir
-fi
-if [ ! -d "$pwd/datadir" ];then
-	echo 'Building database directory ...\n'
-	mkdir datadir
+	tar -zxvf drupal.tar.gz
+	mv drupal-* app
 fi
 
-if [ ! -f "$pwd/web/LICENSE.txt" ];then
+
+if [ ! -f "$pwd/app/LICENSE.txt" ];then
 	echo "Drupal file not exist, return\n"
 	echo "Start failed.\n"
 else

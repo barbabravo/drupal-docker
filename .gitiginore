@@ -1,8 +1,0 @@
-.DS_Store
-*.tar.gz
-datadir
-web
-web/**
-.vscode
-.vscode/**
-drupal-**
