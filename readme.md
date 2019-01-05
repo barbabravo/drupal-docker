@@ -1,1 +1,1 @@
-参照http://pha.huatongsilver-inc.com/w/%E9%BB%84%E9%87%91%E8%B1%A1/
+创建一个app文件夹，将drupal的代码放到app里

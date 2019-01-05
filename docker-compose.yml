@@ -1,5 +1,15 @@
 version: '2'
 services:
+  # redis:
+  #   image: redis
+  #   ports:
+  #     - "6379:6379"
+
+  # memcached: 
+  #   image: memcached
+  #   ports:
+  #     - "11211:11211"
+      
   web:
     image: nginx:1.11.1
     ports:
@@ -11,7 +21,6 @@ services:
     volumes:
       - ./images/nginx/config:/etc/nginx/conf.d
       - ./logs/nginx:/var/log/nginx
-      - ./private:/private
 
   php:
     build:
@@ -19,24 +28,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./app:/mnt/app
-
-  db:
-    image: mariadb:10.1
-    environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "drupal"
-      MYSQL_USER: "drupal"
-      MYSQL_PASSWORD: "drupal"
-    volumes:
-      - db:/var/lib/mysql
-  
-  mail:
-    image: mailhog/mailhog
-    ports:
-      - "2587:587"
-      - "28025:8025"
-    networks:
-      - backend
+      - ./images/php/config/php.ini:/usr/local/etc/php/conf.d/php.ini
   
   portainer:
     image: portainer/portainer
@@ -47,6 +39,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
+
+  db:
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "drupal"
+      MYSQL_USER: "drupal"
+      MYSQL_PASSWORD: "drupal"
+    ports:
+        - "23306:3306"
+    volumes:
+      - db:/var/lib/mysql
 
 volumes:
   db:
