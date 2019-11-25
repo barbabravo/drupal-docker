@@ -44,9 +44,9 @@ services:
     image: mariadb:10.1
     environment:
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "drupal"
-      MYSQL_USER: "drupal"
-      MYSQL_PASSWORD: "drupal"
+      MYSQL_DATABASE: "zaichuan_db"
+      MYSQL_USER: "zaichuan"
+      MYSQL_PASSWORD: "123456"
     ports:
         - "23306:3306"
     volumes:
